@@ -30,6 +30,19 @@ On each turn, triage which mode the participant is in:
 - **Run Reference** — "run the workshop pipeline", "score San Diego for insurance", **"score Seattle for insurance" (AOI tweak)**, **"use wildfire=0.5 weights" (weights tweak)**, "swap to the CRE industry" (one of the four selectors: `insurance`, `commercial_real_estate`, `capital_markets`, `energy_utilities`; the notebook scores all four in one run). Execute `part1_data_engineering/bronze-to-silver.ipynb` then `silver-to-gold.ipynb`. Config-cell parameter edits (AOI, weights, windows, industry selector) belong in the reference notebook — don't create a new one. "Design the pipeline for San Diego" for the shipped hazards and industries is also Run Reference: describe the reference design, offer the config-cell knobs as choices, then run the shipped notebooks; never offer to generate notebooks for an AOI or weight change. The participant runs the notebooks in Kiro (there is no agent-side dispatcher). **Runtime sizing: Medium for `bronze-to-silver` (City of San Diego reference AOI, about 13 min; Large for the county, about 35 min), Small for `silver-to-gold`** (raster zonal stats + spatial KNN need the extra memory; Gold is SQL-only).
 - **Generate Custom** — analysis changes the config cell can't express: a new hazard source ("add lightning-strike exposure"), a new industry not in `INDUSTRY_FACTORS` ("score for agriculture"), new derived metrics, or a different scoring structure. Generate new notebooks under `part1_data_engineering/custom-pipelines/<short-name>/`. Follow every rule in the `wherobots-pipeline` skill. `scripts/bootstrap.py` and `scripts/run_bootstrap.py` are never modified.
 
+### Where the participant is
+
+The catalog is the only progress marker. Before answering "what next?" or "where am I?", list `org_catalog` and read the state off it:
+
+| `org_catalog` holds | Next step |
+|---|---|
+| none of `noaa_swdi`, `opera`, `wildfire_risk` | Bootstrap (see **Empty catalog**) |
+| the Bronze databases only | Explore if they want to, then `bronze-to-silver.ipynb` on a Medium runtime (about 13 min for the city) |
+| `silver.asset_enriched` and no `gold` | `python3 scripts/upload_env_to_wherobots.py` once, then `silver-to-gold.ipynb` on Small (about 5 min) |
+| the four `gold` tables | Verify the tables landed in Aurora (see **Verify Gold in Aurora**), then hand off to Part 2 |
+
+Name the step they are on and what the next one costs in minutes before they start it. A `silver` database without `asset_enriched` is a Silver run that stopped early: re-run that notebook top to bottom. The guide, `workshop-step-by-step.md`, has the full order (Part 1 steps 1 to 4, then Part 2).
+
 ### Empty catalog
 
 If `org_catalog.{noaa_swdi,opera,wildfire_risk}` tables don't exist yet when the participant asks to explore or run:
@@ -75,3 +88,4 @@ Participants fill in `.env` and launch Kiro with `scripts/kiro.sh`, which export
 | Design Gold scoring for a new industry | `part1_data_engineering/skills/wherobots-pipeline/references/gold-scoring.md` |
 | Work with OPERA flood data specifically | `part1_data_engineering/skills/wherobots-pipeline/references/opera-dswx-s1.md` |
 | Build a Felt map from Aurora | `part2_map_agent/CLAUDE.md` + `part2_map_agent/skills/*` |
+| Follow the workshop in order | `workshop-step-by-step.md` |
