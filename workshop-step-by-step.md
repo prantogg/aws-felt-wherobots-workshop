@@ -74,7 +74,7 @@ This is what you'll explore: ~1M buildings, 4 industry perspectives, one map.
 > **Python 3.10+ needed.** macOS's `python3` is 3.9.6 (too old) — `brew install python@3.13`, then use `python3.13 -m venv .venv` below.
 
 ```bash
-git clone https://github.com/jaime-blip/aws-felt-wherobots-workshop.git
+git clone https://github.com/prantogg/aws-felt-wherobots-workshop.git
 cd aws-felt-wherobots-workshop
 python3 -m venv .venv
 source .venv/bin/activate
@@ -106,7 +106,7 @@ Deploy the stack (pick a strong password — you'll put it in `.env` next step):
 ```bash
 aws cloudformation deploy \
   --template-file deploy-aurora/cloudformation.yaml \
-  --stack-name geospatial-workshop \
+  --stack-name cloudformation \
   --parameter-overrides \
       DBMasterUsername=workshop_admin \
       DBMasterPassword='ChangeMe-StrongPassword123!' \
@@ -119,7 +119,7 @@ grab the outputs:
 
 ```bash
 aws cloudformation describe-stacks \
-  --stack-name geospatial-workshop \
+  --stack-name cloudformation \
   --region us-west-2 \
   --query 'Stacks[0].Outputs' \
   --output table
@@ -146,7 +146,7 @@ The outputs table looks like this — `AuroraDSN`, `BedrockRoleArn`, `VpcId`, an
 > Wherobots, and Bedrock. Make sure your Bedrock model access (above) is enabled
 > in `us-west-2`.
 
-> **Tear-down:** `aws cloudformation delete-stack --stack-name geospatial-workshop --region us-west-2`
+> **Tear-down:** `aws cloudformation delete-stack --stack-name cloudformation --region us-west-2`
 
 ### Step 3 — Configure credentials
 
