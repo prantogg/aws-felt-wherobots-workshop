@@ -29,13 +29,20 @@ User prompt → Strands Agent → Felt MCP tools → Aurora (SQL) → Felt Map
 - Complex transforms → pandas/geopandas
 - Debug connectivity → psycopg2
 
-## Data (pre-loaded in Aurora, `workshop` schema)
+## Data (Aurora, `workshop` schema)
 
-4 Gold tables, ~1M San Diego buildings each:
-- `workshop.insurance_exposure` — risk_tier, wildfire/flood/weather factors, triage_priority
-- `workshop.cre_risk` — risk_tier, acquisition_screen_flag, exposure_magnitude_index
-- `workshop.capital_markets_signals` — disruption_signal, supply_chain_vulnerability (no risk_tier)
-- `workshop.energy_asset_risk` — risk_tier, outage_probability, wildfire_ignition_risk
+The CloudFormation seed loads one table, `workshop.insurance_exposure`, for
+San Diego County (about 1.03M buildings). A completed Part 1 Gold run replaces
+it and adds the other three, all for the City of San Diego (357,263 buildings
+each). Count rows before promising a map on `cre_risk`,
+`capital_markets_signals` or `energy_asset_risk`: if Part 1 was not run, only
+`insurance_exposure` exists.
+
+Every table has `risk_score`, `risk_tier`, the three factors and `score_explanation`, plus:
+- `workshop.insurance_exposure` — exposure_delta, triage_priority, relative_risk_band
+- `workshop.cre_risk` — acquisition_screen_flag, exposure_magnitude_index, hazard_proximity_m
+- `workshop.capital_markets_signals` — disruption_signal, supply_chain_vulnerability, event_density_signal
+- `workshop.energy_asset_risk` — outage_probability, wildfire_ignition_risk, weather_impact_frequency
 
 ## MCP Servers
 

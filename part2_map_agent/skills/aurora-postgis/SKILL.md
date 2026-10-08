@@ -56,8 +56,12 @@ print(f"Layer ID: {result['layer_id']}")
 
 ## Workshop Data (for reference)
 
-The `workshop` schema contains:
-- `workshop.insurance_exposure` — 357,263 buildings (City of San Diego), insurance risk scores
+The `workshop` schema holds the CloudFormation seed until Part 1's Gold run
+replaces it: the seed is `workshop.insurance_exposure` alone, for San Diego
+County (about 1.03M buildings); after the run all four tables exist for the
+City of San Diego (357,263 buildings each). Count rows before relying on a
+table.
+- `workshop.insurance_exposure` — insurance risk scores
 - `workshop.cre_risk` — Commercial real estate risk scores
 - `workshop.capital_markets_signals` — Capital markets signals
 - `workshop.energy_asset_risk` — Energy infrastructure risk
