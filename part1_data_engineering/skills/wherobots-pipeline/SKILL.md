@@ -69,8 +69,9 @@ Routing examples that are **Run Reference**, not Generate Custom:
   weather) and industries — describe the reference design, surface the
   config-cell knobs (AOI, windows, weights, industry) as choices, then run
   the shipped notebooks. Do not offer to generate notebooks.
-- *"Scope it to the City of San Diego"* (the reference is the county) — one line
-  in the config cell (`wkls.us.ca.sandiego.wkt()`), not a custom pipeline.
+- *"Run it for the whole county"* (the reference is the City of San Diego) — one
+  line in the config cell (`wkls.us.ca.sandiegocounty.wkt()`, Large runtime,
+  about 35 min), not a custom pipeline.
 - *"Only score for insurance"* — the industry selector, same cell.
 
 **How it runs: the participant runs the notebooks in Kiro.** Open the
