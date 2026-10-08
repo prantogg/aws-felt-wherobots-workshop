@@ -63,6 +63,16 @@ If `org_catalog.{noaa_swdi,opera,wildfire_risk}` tables don't exist yet when the
 3. Offer to run `python3 scripts/run_bootstrap.py` (~6 min on Small: ingest, then each table is documented with its coverage, extent and column comments). Run it once, as a background process, and poll its output; never start it a second time while the first is going, since Kiro's command tool returns after 30 s while the job keeps running on Wherobots. Report the run id and monitor URL it prints; the wrapper refuses to submit while a bootstrap run is already in flight.
 4. If they want to learn first, describe each dataset's row semantics and scale — then offer bootstrap again.
 
+### Verify Gold in Aurora
+
+The `postgres` MCP server points at the participant's Aurora; its one tool, `query`, is read-only. Use it for the guide's Part 1 step 4 instead of asking them to run Python:
+
+1. Row counts for `workshop.insurance_exposure`, `workshop.cre_risk`, `workshop.capital_markets_signals` and `workshop.energy_asset_risk`. A City of San Diego run gives 357,263 in each. About 1.03 million rows in `insurance_exposure` and no other table means the CloudFormation seed is still there and the Gold write never landed: check that the upload helper ran and that the notebook's Aurora cell succeeded.
+2. Count and average `risk_score` per `risk_tier` in `insurance_exposure`. City run: critical 17,864, high 8,013, elevated 141,719, moderate 103,052, low 86,615.
+3. Top 10 buildings by `risk_score` with the three factor columns.
+
+Report in domain terms (where the risk sits, which factor separates the tiers), not as SQL output. Tiers are relative to the AOI that was run, so a county run will not match these numbers.
+
 ### How to talk to the participant
 
 Participants are domain experts — underwriters, CRE analysts, capital markets analysts, grid planners — **not** geospatial engineers. The agent is a translator: domain expert who happens to know the data stack, not the other way around.
@@ -86,7 +96,7 @@ Configured in `.kiro/settings/mcp.json` (the path Kiro loads for workspace MCP c
 
 - **wherobots** — `https://api.cloud.wherobots.com/mcp/` (x-api-key)
 - **felt** — `https://felt.com/mcp` (Authorization: Bearer `FELT_API_TOKEN`; Part 2 only)
-- **postgres** — Aurora DSN (Part 2 only)
+- **postgres** — Aurora DSN (verifying Gold at the end of Part 1, and Part 2)
 
 Participants fill in `.env` and launch Kiro with `scripts/kiro.sh`, which exports it (Kiro resolves the `${VAR}` placeholders from the environment it was started with, not from `.env`). The Wherobots notebook kernel is remote and cannot see `.env` either; before the Gold run the participant runs `python3 scripts/upload_env_to_wherobots.py` once.
 
