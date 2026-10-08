@@ -1,7 +1,7 @@
 strands-agents>=1.33.0
 strands-agents-bedrock>=0.0.1
 strands-agents-tools>=0.2.23
-mcp
+mcp==1.30.0
 felt-python
 geopandas
 pandas
